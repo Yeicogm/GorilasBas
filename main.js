@@ -68,7 +68,7 @@ let currentPlayer = 0; // 0: jugador 1, 1: jugador 2
 let banana = null;
 let gameActive = false;
 // Últimos valores de cada jugador (persistentes)
-let lastAngles = [55, 55];
+let lastAngles = [60, 60];
 let lastForces = [20, 20];
 // Cargar de localStorage si existen
 try {
@@ -109,8 +109,17 @@ function startGame() {
 function generateBuildings() {
   buildings = [];
   let x = 0;
-  while (x < WIDTH) {
-    let h = rand(BUILDING_MIN, BUILDING_MAX);
+  let count = Math.ceil(WIDTH / BUILDING_WIDTH);
+  // Determinar los índices de los 3 edificios centrales
+  let centralStart = Math.floor((count - 3) / 2);
+  let centralEnd = centralStart + 2;
+  for (let i = 0; i < count; i++) {
+    let min = BUILDING_MIN;
+    // Solo los 3 edificios centrales serán más altos
+    if (i >= centralStart && i <= centralEnd) {
+      min = BUILDING_MIN + 280; // Puedes ajustar este valor
+    }
+    let h = rand(min, BUILDING_MAX);
     buildings.push({ x, y: HEIGHT - h, w: BUILDING_WIDTH, h, holes: [] });
     x += BUILDING_WIDTH;
   }
