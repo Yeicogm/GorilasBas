@@ -1,3 +1,9 @@
+/* Título resaltado */
+.titulo-resaltado {
+  color: #00ffe7;
+  text-shadow: 0 0 8px #00ffe7, 0 2px 0 #000, 0 0 24px #00bfae;
+  letter-spacing: 2px;
+}
 .presentation-img {
   width: 120px;
   image-rendering: pixelated;

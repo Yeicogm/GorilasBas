@@ -69,7 +69,7 @@ let banana = null;
 let gameActive = false;
 // Últimos valores de cada jugador (persistentes)
 let lastAngles = [60, 60];
-let lastForces = [20, 20];
+let lastForces = [18, 18];
 // Cargar de localStorage si existen
 try {
   const la = localStorage.getItem("gorilas_lastAngles");
