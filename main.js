@@ -351,58 +351,138 @@ function drawGorillas() {
     let g = gorillas[i];
     ctx.save();
     ctx.translate(g.x, g.y - GORILLA_SIZE / 2);
-    // Cuerpo cuadrado
+    // (Sombra eliminada)
+    // Cuerpo ovalado
     ctx.fillStyle = g.color;
-    ctx.fillRect(-13, 2, 26, 22);
+    ctx.beginPath();
+    ctx.ellipse(0, 12, 15, 13, 0, 0, Math.PI * 2);
+    ctx.fill();
     // Barriga clara
     ctx.fillStyle = "#ffe0b2";
-    ctx.fillRect(-7, 12, 14, 10);
-    // Cabeza cuadrada
+    ctx.beginPath();
+    ctx.ellipse(0, 18, 7, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Cabeza redonda
     ctx.fillStyle = g.color;
-    ctx.fillRect(-10, -16, 20, 18);
+    ctx.beginPath();
+    ctx.ellipse(0, -7, 10, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Orejas
+    ctx.fillStyle = g.color;
+    ctx.beginPath();
+    ctx.ellipse(-10, -7, 2.5, 3.5, 0, 0, Math.PI * 2);
+    ctx.ellipse(10, -7, 2.5, 3.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Interior orejas
+    ctx.fillStyle = "#ffe0b2";
+    ctx.beginPath();
+    ctx.ellipse(-10, -7, 1.2, 1.7, 0, 0, Math.PI * 2);
+    ctx.ellipse(10, -7, 1.2, 1.7, 0, 0, Math.PI * 2);
+    ctx.fill();
     // Cara clara
     ctx.fillStyle = "#ffe0b2";
-    ctx.fillRect(-7, -10, 14, 10);
-    // Ojos juntos
+    ctx.beginPath();
+    ctx.ellipse(0, -4, 7, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Nariz
+    ctx.fillStyle = "#b77b4b";
+    ctx.beginPath();
+    ctx.ellipse(0, -1, 2.2, 1.2, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Fosas
+    ctx.fillStyle = "#333";
+    ctx.beginPath();
+    ctx.ellipse(-0.7, -1, 0.3, 0.5, 0, 0, Math.PI * 2);
+    ctx.ellipse(0.7, -1, 0.3, 0.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Ojos enfadados
+    ctx.fillStyle = "#fff";
+    ctx.beginPath();
+    ctx.ellipse(-3, -7, 2.2, 2.7, 0, 0, Math.PI * 2);
+    ctx.ellipse(3, -7, 2.2, 2.7, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Pupilas
     ctx.fillStyle = "#000";
     ctx.beginPath();
-    ctx.arc(-3, -6, 1.7, 0, Math.PI * 2);
-    ctx.arc(3, -6, 1.7, 0, Math.PI * 2);
+    ctx.ellipse(-3, -6.5, 1, 1.3, 0, 0, Math.PI * 2);
+    ctx.ellipse(3, -6.5, 1, 1.3, 0, 0, Math.PI * 2);
     ctx.fill();
-    // Boca recta
-    ctx.strokeStyle = "#000";
-    ctx.lineWidth = 1.2;
+    // Brillo en los ojos
+    ctx.fillStyle = "#fff";
     ctx.beginPath();
-    ctx.moveTo(-3, -2);
-    ctx.lineTo(3, -2);
+    ctx.ellipse(-2.3, -7.7, 0.5, 0.6, 0, 0, Math.PI * 2);
+    ctx.ellipse(3.7, -7.7, 0.5, 0.6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Cejas fruncidas (enfadadas)
+    ctx.strokeStyle = "#333";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-5, -9);
+    ctx.quadraticCurveTo(-3, -12, -1, -9.5);
+    ctx.moveTo(1, -9.5);
+    ctx.quadraticCurveTo(3, -12, 5, -9);
     ctx.stroke();
-    // Brazos levantados
+    // Boca seria
+    ctx.strokeStyle = "#333";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-2, -1);
+    ctx.lineTo(2, -1);
+    ctx.stroke();
+    // Brazos redondeados
     ctx.save();
     ctx.strokeStyle = g.color;
     ctx.lineWidth = 8;
+    ctx.lineCap = "round";
     ctx.beginPath();
-    ctx.moveTo(-13, 6);
-    ctx.lineTo(-20, -18);
-    ctx.moveTo(13, 6);
-    ctx.lineTo(20, -18);
+    ctx.moveTo(-13, 8);
+    ctx.quadraticCurveTo(-22, -5, -18, -18);
+    ctx.moveTo(13, 8);
+    ctx.quadraticCurveTo(22, -5, 18, -18);
     ctx.stroke();
-    // Manos grandes
+    // Manos
     ctx.fillStyle = g.color;
     ctx.beginPath();
-    ctx.arc(-20, -18, 5, 0, Math.PI * 2);
-    ctx.arc(20, -18, 5, 0, Math.PI * 2);
+    ctx.ellipse(-18, -18, 4.5, 4, 0, 0, Math.PI * 2);
+    ctx.ellipse(18, -18, 4.5, 4, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
-    // Piernas cortas
+    // Piernas
     ctx.save();
     ctx.strokeStyle = g.color;
     ctx.lineWidth = 7;
+    ctx.lineCap = "round";
     ctx.beginPath();
-    ctx.moveTo(-7, 24);
-    ctx.lineTo(-7, 34);
-    ctx.moveTo(7, 24);
-    ctx.lineTo(7, 34);
+    ctx.moveTo(-6, 24);
+    ctx.lineTo(-6, 32);
+    ctx.moveTo(6, 24);
+    ctx.lineTo(6, 32);
     ctx.stroke();
+    // Pies (piel más oscura)
+    ctx.fillStyle = darkenColor("#ffe0b2", 40);
+    ctx.beginPath();
+    ctx.ellipse(-6, 34, 3.5, 2, 0, 0, Math.PI * 2);
+    ctx.ellipse(6, 34, 3.5, 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Función auxiliar para oscurecer colores (si no existe)
+    function darkenColor(color, percent) {
+      const num = parseInt(color.replace("#", ""), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = (num >> 16) - amt;
+      const G = ((num >> 8) & 0x00ff) - amt;
+      const B = (num & 0x0000ff) - amt;
+      return (
+        "#" +
+        (
+          0x1000000 +
+          (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+          (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+          (B < 255 ? (B < 1 ? 0 : B) : 255)
+        )
+          .toString(16)
+          .slice(1)
+      );
+    }
     ctx.restore();
     ctx.restore();
   }
