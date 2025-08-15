@@ -18,6 +18,38 @@
           <b>Jugador 2:</b> Igual, después de su turno.<br /><br />
           ¡Pulsa <b>Comenzar</b> para jugar!
         </p>
+        <div
+          style="
+            margin: 18px 0 10px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+          "
+        >
+          <label
+            >Nombre Jugador 1:
+            <input
+              id="player1Name"
+              type="text"
+              maxlength="12"
+              style="width: 120px"
+              autocomplete="off"
+              value="David"
+            />
+          </label>
+          <label
+            >Nombre Jugador 2:
+            <input
+              id="player2Name"
+              type="text"
+              maxlength="12"
+              style="width: 120px"
+              autocomplete="off"
+              value="Abel"
+            />
+          </label>
+        </div>
         <button id="startBtn">Comenzar</button>
       </div>
     </div>
@@ -31,7 +63,7 @@
           id="angleSlider"
           min="0"
           max="91"
-          value="45"
+          value="55"
           class="slider-angle"
         />
         <input
@@ -39,7 +71,7 @@
           id="angleInput"
           min="0"
           max="91"
-          value="45"
+          value="55"
           class="input-angle"
         />
       </label>
@@ -50,7 +82,7 @@
           id="velocitySlider"
           min="1"
           max="35"
-          value="18"
+          value="20"
           class="slider-velocity"
         />
         <input
@@ -58,7 +90,7 @@
           id="velocityInput"
           min="1"
           max="35"
-          value="18"
+          value="20"
           class="input-velocity"
         />
       </label>

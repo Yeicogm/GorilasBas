@@ -8,8 +8,43 @@ const angleSlider = document.getElementById("angleSlider");
 const velocitySlider = document.getElementById("velocitySlider");
 const throwBtn = document.getElementById("throwBtn");
 const turnInfo = document.getElementById("turnInfo");
-const presentation = document.getElementById("presentation");
-const startBtn = document.getElementById("startBtn");
+// Las variables de presentación y nombres se inicializan en window.onload
+let player1NameInput, player2NameInput, startBtn, presentation;
+// Nombres de jugadores (persistentes)
+let playerNames = ["David", "Abel"];
+try {
+  const pn = localStorage.getItem("gorilas_playerNames");
+  if (pn) playerNames = JSON.parse(pn);
+} catch (e) {}
+
+window.onload = function () {
+  player1NameInput = document.getElementById("player1Name");
+  player2NameInput = document.getElementById("player2Name");
+  startBtn = document.getElementById("startBtn");
+  presentation = document.getElementById("presentation");
+  if (player1NameInput && player2NameInput) {
+    player1NameInput.value = playerNames[0];
+    player2NameInput.value = playerNames[1];
+  }
+  if (startBtn) {
+    startBtn.onclick = () => {
+      // Leer y guardar nombres
+      if (player1NameInput && player2NameInput) {
+        let n1 = player1NameInput.value.trim() || "Jugador 1";
+        let n2 = player2NameInput.value.trim() || "Jugador 2";
+        playerNames = [n1, n2];
+        try {
+          localStorage.setItem(
+            "gorilas_playerNames",
+            JSON.stringify(playerNames)
+          );
+        } catch (e) {}
+      }
+      if (presentation) presentation.style.display = "none";
+      startGame();
+    };
+  }
+};
 
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
@@ -25,6 +60,16 @@ let gorillas = [];
 let currentPlayer = 0; // 0: jugador 1, 1: jugador 2
 let banana = null;
 let gameActive = false;
+// Últimos valores de cada jugador (persistentes)
+let lastAngles = [55, 55];
+let lastForces = [20, 20];
+// Cargar de localStorage si existen
+try {
+  const la = localStorage.getItem("gorilas_lastAngles");
+  const lf = localStorage.getItem("gorilas_lastForces");
+  if (la) lastAngles = JSON.parse(la);
+  if (lf) lastForces = JSON.parse(lf);
+} catch (e) {}
 
 // --- Sonidos ---
 const sounds = {
@@ -40,12 +85,6 @@ function playSound(name) {
     sounds[name].play();
   }
 }
-
-// --- Presentación ---
-startBtn.onclick = () => {
-  presentation.style.display = "none";
-  startGame();
-};
 
 // --- Inicialización del juego ---
 function startGame() {
@@ -74,16 +113,26 @@ function placeGorillas() {
   gorillas = [];
   let g1 = buildings[1];
   let g2 = buildings[buildings.length - 2];
-  gorillas.push({ x: g1.x + g1.w / 2, y: g1.y, color: "#ff4081" });
-  gorillas.push({ x: g2.x + g2.w / 2, y: g2.y, color: "#40c4ff" });
+  // Levantar al gorila para que quede bien sobre el edificio
+  const gorillaYOffset = GORILLA_SIZE * 0.7; // Ajusta este valor para que quede bien
+  gorillas.push({
+    x: g1.x + g1.w / 2,
+    y: g1.y - gorillaYOffset,
+    color: "#ff4081",
+  });
+  gorillas.push({
+    x: g2.x + g2.w / 2,
+    y: g2.y - gorillaYOffset,
+    color: "#40c4ff",
+  });
 }
 
 function updateTurnInfo() {
-  turnInfo.textContent = `Turno del Jugador ${currentPlayer + 1}`;
-  angleInput.value = 45;
-  angleSlider.value = 45;
-  velocityInput.value = 25;
-  velocitySlider.value = 25;
+  turnInfo.textContent = `Turno de ${playerNames[currentPlayer]}`;
+  angleInput.value = lastAngles[currentPlayer];
+  angleSlider.value = lastAngles[currentPlayer];
+  velocityInput.value = lastForces[currentPlayer];
+  velocitySlider.value = lastForces[currentPlayer];
   angleInput.focus();
 }
 
@@ -132,20 +181,59 @@ function drawGorillas() {
     let g = gorillas[i];
     ctx.save();
     ctx.translate(g.x, g.y - GORILLA_SIZE / 2);
+    // Cuerpo cuadrado
     ctx.fillStyle = g.color;
-    ctx.beginPath();
-    ctx.arc(0, 0, GORILLA_SIZE / 2, 0, Math.PI * 2);
-    ctx.fill();
-    // Carita
-    ctx.fillStyle = "#fff";
-    ctx.beginPath();
-    ctx.arc(0, 0, 10, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fillRect(-13, 2, 26, 22);
+    // Barriga clara
+    ctx.fillStyle = "#ffe0b2";
+    ctx.fillRect(-7, 12, 14, 10);
+    // Cabeza cuadrada
+    ctx.fillStyle = g.color;
+    ctx.fillRect(-10, -16, 20, 18);
+    // Cara clara
+    ctx.fillStyle = "#ffe0b2";
+    ctx.fillRect(-7, -10, 14, 10);
+    // Ojos juntos
     ctx.fillStyle = "#000";
     ctx.beginPath();
-    ctx.arc(-4, -2, 2, 0, Math.PI * 2);
-    ctx.arc(4, -2, 2, 0, Math.PI * 2);
+    ctx.arc(-3, -6, 1.7, 0, Math.PI * 2);
+    ctx.arc(3, -6, 1.7, 0, Math.PI * 2);
     ctx.fill();
+    // Boca recta
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(-3, -2);
+    ctx.lineTo(3, -2);
+    ctx.stroke();
+    // Brazos levantados
+    ctx.save();
+    ctx.strokeStyle = g.color;
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.moveTo(-13, 6);
+    ctx.lineTo(-20, -18);
+    ctx.moveTo(13, 6);
+    ctx.lineTo(20, -18);
+    ctx.stroke();
+    // Manos grandes
+    ctx.fillStyle = g.color;
+    ctx.beginPath();
+    ctx.arc(-20, -18, 5, 0, Math.PI * 2);
+    ctx.arc(20, -18, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    // Piernas cortas
+    ctx.save();
+    ctx.strokeStyle = g.color;
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    ctx.moveTo(-7, 24);
+    ctx.lineTo(-7, 34);
+    ctx.moveTo(7, 24);
+    ctx.lineTo(7, 34);
+    ctx.stroke();
+    ctx.restore();
     ctx.restore();
   }
 }
@@ -171,6 +259,14 @@ throwBtn.onclick = () => {
     return alert("Introduce ángulo y velocidad válidos.");
   if (angle < 0 || angle > 91 || velocity < 1 || velocity > 35)
     return alert("Valores fuera de rango.");
+  // Guardar el valor para el jugador actual
+  lastAngles[currentPlayer] = angle;
+  lastForces[currentPlayer] = velocity;
+  // Guardar en localStorage
+  try {
+    localStorage.setItem("gorilas_lastAngles", JSON.stringify(lastAngles));
+    localStorage.setItem("gorilas_lastForces", JSON.stringify(lastForces));
+  } catch (e) {}
   playSound("throw");
   launchBanana(angle, velocity);
 };
@@ -224,7 +320,7 @@ function checkBananaCollision() {
     playSound("win");
     draw();
     setTimeout(() => {
-      alert(`¡Jugador ${currentPlayer + 1} gana!`);
+      alert(`¡${playerNames[currentPlayer]} gana!`);
       startGame();
     }, 100);
     banana = null;
