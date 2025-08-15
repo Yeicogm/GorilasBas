@@ -1,21 +1,31 @@
+// --- Frases del sol ---
+const sunPhrases = [
+  // Frases originales
+
+  "¿Quién ganará esta vez?",
+  "¡Buen lanzamiento!",
+  "¡No me tapen, por favor!",
+  "¡A ver si le das!",
+  "¡No olvides el ángulo!",
+  // Frases personalizadas del usuario
+  "¿Has reiniciado el platano?",
+  "¡Eso va a ser del cicutrino!",
+  "¡Quizas si pones los numero de Mayusculas!",
+  "¡Te voy a quizar un recuperable por eso!",
+  "¡Esto lo ha echo una IA SEGURO!",
+  "Las 12? Cafe?",
+  "¡Disfruta de la playa!",
+  "En serio eso es un mono?!",
+  "¡En MS-DOS se veia mejor!",
+  "Windows?! EN SERIO!",
+];
+let currentSunPhrase = null; // No mostrar frase al inicio
+let sunHasSpoken = false;
 // --- Variables globales ---
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-const inputPanel = document.getElementById("inputPanel");
-const angleInput = document.getElementById("angleInput");
-const velocityInput = document.getElementById("velocityInput");
-const angleSlider = document.getElementById("angleSlider");
-const velocitySlider = document.getElementById("velocitySlider");
-const throwBtn = document.getElementById("throwBtn");
-const turnInfo = document.getElementById("turnInfo");
-// Las variables de presentación y nombres se inicializan en window.onload
-let player1NameInput, player2NameInput, startBtn, presentation;
-// Nombres de jugadores (persistentes)
 let playerNames = ["David", "Abel"];
-try {
-  const pn = localStorage.getItem("gorilas_playerNames");
-  if (pn) playerNames = JSON.parse(pn);
-} catch (e) {}
 
 window.onload = function () {
   player1NameInput = document.getElementById("player1Name");
@@ -74,6 +84,7 @@ let lastForces = [18, 18];
 try {
   const la = localStorage.getItem("gorilas_lastAngles");
   const lf = localStorage.getItem("gorilas_lastForces");
+  sunHasSpoken = true; // Marcar que el sol ha hablado
   if (la) lastAngles = JSON.parse(la);
   if (lf) lastForces = JSON.parse(lf);
 } catch (e) {}
@@ -227,6 +238,73 @@ function drawSun() {
   ctx.lineWidth = 2;
   ctx.arc(sunX, sunY + 2, 8, 0.15 * Math.PI, 0.85 * Math.PI);
   ctx.stroke();
+
+  // --- Bocadillo tipo cómic ---
+  if (sunHasSpoken && currentSunPhrase) {
+    ctx.font = "bold 11px 'Press Start 2P', Arial, sans-serif";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    let phrase = currentSunPhrase;
+    if (phrase && phrase !== "null") {
+      let padding = 12;
+      let textWidth = ctx.measureText(phrase).width;
+      let boxWidth = textWidth + padding * 2;
+      let boxHeight = 38;
+      // Determinar si el bocadillo se sale del canvas por la derecha
+      let preferRight = true;
+      let boxX = sunX + sunRadius + 18;
+      let boxY = sunY - boxHeight / 2;
+      if (boxX + boxWidth > WIDTH - 10) {
+        // Si se sale, dibujar a la izquierda
+        preferRight = false;
+        boxX = sunX - sunRadius - 18 - boxWidth;
+      }
+      // Bocadillo
+      ctx.save();
+      ctx.beginPath();
+      if (preferRight) {
+        ctx.moveTo(boxX, boxY + boxHeight / 2);
+        ctx.lineTo(boxX - 14, sunY + 6); // Puntero
+        ctx.lineTo(boxX, boxY + boxHeight - 8);
+        ctx.arcTo(
+          boxX,
+          boxY + boxHeight,
+          boxX + boxWidth,
+          boxY + boxHeight,
+          12
+        );
+        ctx.arcTo(boxX + boxWidth, boxY + boxHeight, boxX + boxWidth, boxY, 12);
+        ctx.arcTo(boxX + boxWidth, boxY, boxX, boxY, 12);
+        ctx.arcTo(boxX, boxY, boxX, boxY + boxHeight, 12);
+      } else {
+        ctx.moveTo(boxX + boxWidth, boxY + boxHeight / 2);
+        ctx.lineTo(boxX + boxWidth + 14, sunY + 6); // Puntero a la derecha
+        ctx.lineTo(boxX + boxWidth, boxY + boxHeight - 8);
+        ctx.arcTo(
+          boxX + boxWidth,
+          boxY + boxHeight,
+          boxX,
+          boxY + boxHeight,
+          12
+        );
+        ctx.arcTo(boxX, boxY + boxHeight, boxX, boxY, 12);
+        ctx.arcTo(boxX, boxY, boxX + boxWidth, boxY, 12);
+        ctx.arcTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + boxHeight, 12);
+      }
+      ctx.closePath();
+      ctx.fillStyle = "#fffbe9";
+      ctx.globalAlpha = 0.92;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = "#ffd54f";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.restore();
+      // Frase
+      ctx.fillStyle = "#333";
+      ctx.fillText(phrase, boxX + padding, boxY + 10);
+    }
+  }
   ctx.restore();
 }
 
@@ -354,6 +432,12 @@ throwBtn.onclick = () => {
   // Guardar el valor para el jugador actual
   lastAngles[currentPlayer] = angle;
   lastForces[currentPlayer] = velocity;
+  // Cambiar frase del sol en cada lanzamiento
+  let nuevaFrase;
+  do {
+    nuevaFrase = sunPhrases[Math.floor(Math.random() * sunPhrases.length)];
+  } while (nuevaFrase === currentSunPhrase && sunPhrases.length > 1);
+  currentSunPhrase = nuevaFrase;
   // Guardar en localStorage
   try {
     localStorage.setItem("gorilas_lastAngles", JSON.stringify(lastAngles));
