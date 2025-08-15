@@ -55,7 +55,14 @@ const BUILDING_WIDTH = 50;
 const GORILLA_SIZE = 32;
 const BANANA_RADIUS = 6;
 
+// Variables del sol
+let sunX = null;
+let sunY = null;
+let sunRadius = null;
+
 let buildings = [];
+// Cada edificio tendrá un array de "agujeros" (círculos de destrucción)
+
 let gorillas = [];
 let currentPlayer = 0; // 0: jugador 1, 1: jugador 2
 let banana = null;
@@ -104,7 +111,7 @@ function generateBuildings() {
   let x = 0;
   while (x < WIDTH) {
     let h = rand(BUILDING_MIN, BUILDING_MAX);
-    buildings.push({ x, y: HEIGHT - h, w: BUILDING_WIDTH, h });
+    buildings.push({ x, y: HEIGHT - h, w: BUILDING_WIDTH, h, holes: [] });
     x += BUILDING_WIDTH;
   }
 }
@@ -216,13 +223,37 @@ function drawSun() {
 
 function drawBuildings() {
   for (let b of buildings) {
+    // Dibuja el edificio como un rectángulo base
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(b.x, b.y, b.w, b.h);
+    // Recorta agujeros si existen
+    for (let hole of b.holes) {
+      ctx.moveTo(hole.x + hole.r, hole.y);
+      ctx.arc(hole.x, hole.y, hole.r, 0, Math.PI * 2);
+    }
+    ctx.closePath();
     ctx.fillStyle = "#888";
-    ctx.fillRect(b.x, b.y, b.w, b.h);
-    // Ventanas
+    ctx.fill("evenodd");
+    ctx.restore();
+    // Ventanas (solo si no hay agujero en esa zona)
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 2; j++) {
-        ctx.fillStyle = "#ffe082";
-        ctx.fillRect(b.x + 8 + j * 20, b.y + 10 + i * 30, 10, 16);
+        let wx = b.x + 8 + j * 20;
+        let wy = b.y + 10 + i * 30;
+        let ventanaTapada = false;
+        for (let hole of b.holes) {
+          let dx = wx + 5 - hole.x;
+          let dy = wy + 8 - hole.y;
+          if (Math.sqrt(dx * dx + dy * dy) < hole.r) {
+            ventanaTapada = true;
+            break;
+          }
+        }
+        if (!ventanaTapada) {
+          ctx.fillStyle = "#ffe082";
+          ctx.fillRect(wx, wy, 10, 16);
+        }
       }
     }
   }
@@ -378,15 +409,34 @@ function checkBananaCollision() {
     banana = null;
     return true;
   }
-  // Con edificios
+  // Identificar el edificio debajo del gorila que lanza
+  let gorilla = gorillas[currentPlayer];
+  let buildingBelowGorilla = null;
   for (let b of buildings) {
+    if (gorilla.x >= b.x && gorilla.x <= b.x + b.w) {
+      buildingBelowGorilla = b;
+      break;
+    }
+  }
+  // Con edificios (excepto el de debajo del gorila que lanza)
+  for (let b of buildings) {
+    if (b === buildingBelowGorilla) continue;
     if (
       banana.x > b.x &&
       banana.x < b.x + b.w &&
       banana.y > b.y &&
       banana.y < b.y + b.h
     ) {
-      // Explosión simple
+      // Reducir altura del edificio y ajustar posición
+      let damage = 32; // cantidad de reducción por impacto
+      if (b.h > damage) {
+        b.h -= damage;
+        b.y += damage;
+      } else {
+        // Si el edificio es muy pequeño, lo dejamos mínimo
+        b.y += b.h - 10;
+        b.h = 10;
+      }
       playSound("explosion");
       ctx.save();
       ctx.beginPath();
@@ -396,6 +446,7 @@ function checkBananaCollision() {
       ctx.restore();
       setTimeout(() => {
         banana = null;
+        draw();
         nextTurn();
       }, 350);
       return true;
