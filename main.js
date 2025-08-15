@@ -409,18 +409,18 @@ function checkBananaCollision() {
     banana = null;
     return true;
   }
-  // Identificar el edificio debajo del gorila que lanza
-  let gorilla = gorillas[currentPlayer];
-  let buildingBelowGorilla = null;
-  for (let b of buildings) {
-    if (gorilla.x >= b.x && gorilla.x <= b.x + b.w) {
-      buildingBelowGorilla = b;
-      break;
+  // Identificar todos los edificios bajo gorilas
+  let buildingsWithGorilla = [];
+  for (let g of gorillas) {
+    for (let b of buildings) {
+      if (g.x >= b.x && g.x <= b.x + b.w) {
+        if (!buildingsWithGorilla.includes(b)) buildingsWithGorilla.push(b);
+      }
     }
   }
-  // Con edificios (excepto el de debajo del gorila que lanza)
+  // Con edificios (excepto los que tienen gorila encima)
   for (let b of buildings) {
-    if (b === buildingBelowGorilla) continue;
+    if (buildingsWithGorilla.includes(b)) continue;
     if (
       banana.x > b.x &&
       banana.x < b.x + b.w &&
