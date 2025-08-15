@@ -1,12 +1,9 @@
 // --- Frases del sol ---
 const sunPhrases = [
   // Frases originales
-
   "¿Quién ganará esta vez?",
-  "¡Buen lanzamiento!",
   "¡No me tapen, por favor!",
   "¡A ver si le das!",
-  "¡No olvides el ángulo!",
   // Frases personalizadas del usuario
   "¿Has reiniciado el platano?",
   "¡Eso va a ser del cicutrino!",
