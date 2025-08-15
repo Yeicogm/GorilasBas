@@ -3,6 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <title>Gorilas.bas - JavaScript Edition</title>
+    <!-- Fuente pixel art -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -18,22 +23,14 @@
           <b>Jugador 2:</b> Igual, después de su turno.<br /><br />
           ¡Pulsa <b>Comenzar</b> para jugar!
         </p>
-        <div
-          style="
-            margin: 18px 0 10px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: center;
-          "
-        >
+        <div class="player-names-panel">
           <label
             >Nombre Jugador 1:
             <input
               id="player1Name"
               type="text"
               maxlength="12"
-              style="width: 120px"
+              class="player-name-input"
               autocomplete="off"
               value="David"
             />
@@ -44,7 +41,7 @@
               id="player2Name"
               type="text"
               maxlength="12"
-              style="width: 120px"
+              class="player-name-input"
               autocomplete="off"
               value="Abel"
             />
@@ -55,7 +52,7 @@
     </div>
     <canvas id="gameCanvas" width="900" height="500"></canvas>
     <div id="inputPanel" class="input-panel hidden">
-      <span id="turnInfo"></span>
+      <span id="turnInfo" class="turn-info-highlight"></span>
       <label>
         Ángulo:
         <input
