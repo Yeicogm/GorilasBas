@@ -414,7 +414,7 @@ function drawBanana() {
   ctx.rotate(banana.angle);
   ctx.fillStyle = "#ffeb3b";
   ctx.beginPath();
-  ctx.arc(0, 0, BANANA_RADIUS, Math.PI * 0.2, Math.PI * 1.8);
+  ctx.arc(0, 0, BANANA_RADIUS, Math.PI * 0.2, Math.PI * 1.6);
   ctx.lineTo(0, 0);
   ctx.fill();
   ctx.restore();
