@@ -90,6 +90,7 @@ function playSound(name) {
 function startGame() {
   generateBuildings();
   placeGorillas();
+  placeSun(); // Nueva posición aleatoria del sol al iniciar
   currentPlayer = 0;
   banana = null;
   gameActive = true;
@@ -125,6 +126,14 @@ function placeGorillas() {
     y: g2.y - gorillaYOffset,
     color: "#40c4ff",
   });
+}
+
+function placeSun() {
+  // El sol estará en la parte superior, con margen a los lados
+  sunRadius = 24; // Más pequeño
+  const margin = 30 + sunRadius;
+  sunX = Math.floor(Math.random() * (WIDTH - 2 * margin)) + margin;
+  sunY = 38; // Siempre arriba
 }
 
 function updateTurnInfo() {
@@ -165,32 +174,43 @@ function draw() {
 
 // Dibuja un sol pixel art en la esquina superior derecha
 function drawSun() {
-  const sunX = WIDTH - 70;
-  const sunY = 70;
-  const sunRadius = 38;
-  // Círculo principal
+  if (sunX === null || sunY === null || sunRadius === null) placeSun();
   ctx.save();
+  // Círculo principal
   ctx.beginPath();
   ctx.arc(sunX, sunY, sunRadius, 0, Math.PI * 2);
   ctx.fillStyle = "#ffe082";
   ctx.shadowColor = "#ffd54f";
-  ctx.shadowBlur = 12;
+  ctx.shadowBlur = 10;
   ctx.fill();
   ctx.shadowBlur = 0;
-  // Rayos (pixel art)
+  // Rayos
   ctx.strokeStyle = "#ffd54f";
-  ctx.lineWidth = 7;
+  ctx.lineWidth = 4;
   for (let i = 0; i < 12; i++) {
     let angle = (i * Math.PI * 2) / 12;
-    let x1 = sunX + Math.cos(angle) * (sunRadius + 8);
-    let y1 = sunY + Math.sin(angle) * (sunRadius + 8);
-    let x2 = sunX + Math.cos(angle) * (sunRadius + 24);
-    let y2 = sunY + Math.sin(angle) * (sunRadius + 24);
+    let x1 = sunX + Math.cos(angle) * (sunRadius + 6);
+    let y1 = sunY + Math.sin(angle) * (sunRadius + 6);
+    let x2 = sunX + Math.cos(angle) * (sunRadius + 16);
+    let y2 = sunY + Math.sin(angle) * (sunRadius + 16);
     ctx.beginPath();
     ctx.moveTo(Math.round(x1), Math.round(y1));
     ctx.lineTo(Math.round(x2), Math.round(y2));
     ctx.stroke();
   }
+  // Cara sonriente
+  // Ojos
+  ctx.beginPath();
+  ctx.arc(sunX - 7, sunY - 5, 2.2, 0, Math.PI * 2);
+  ctx.arc(sunX + 7, sunY - 5, 2.2, 0, Math.PI * 2);
+  ctx.fillStyle = "#333";
+  ctx.fill();
+  // Boca (arco)
+  ctx.beginPath();
+  ctx.strokeStyle = "#333";
+  ctx.lineWidth = 2;
+  ctx.arc(sunX, sunY + 2, 8, 0.15 * Math.PI, 0.85 * Math.PI);
+  ctx.stroke();
   ctx.restore();
 }
 
