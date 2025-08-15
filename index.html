@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Gorilas.bas - JavaScript Edition</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="presentation" class="modal">
+      <div class="modal-content">
+        <h1>Gorilas.bas</h1>
+        <p>
+          ¡Bienvenido al clásico juego de los gorilas!<br />
+          Dos jugadores se turnan para lanzar plátanos sobre los edificios.<br />
+          Introduce ángulo y velocidad para golpear al gorila rival.<br /><br />
+          <b>Controles:</b><br />
+          <b>Jugador 1:</b> Ingresa ángulo y velocidad, luego presiona Enter.<br />
+          <b>Jugador 2:</b> Igual, después de su turno.<br /><br />
+          ¡Pulsa <b>Comenzar</b> para jugar!
+        </p>
+        <button id="startBtn">Comenzar</button>
+      </div>
+    </div>
+    <canvas id="gameCanvas" width="900" height="500"></canvas>
+    <div id="inputPanel" class="input-panel hidden">
+      <span id="turnInfo"></span>
+      <label>
+        Ángulo:
+  <input type="range" id="angleSlider" min="0" max="91" value="45" class="slider-angle">
+  <input type="number" id="angleInput" min="0" max="91" value="45" class="input-angle">
+      </label>
+      <label>
+        Velocidad:
+    <input type="range" id="velocitySlider" min="1" max="35" value="18" class="slider-velocity">
+    <input type="number" id="velocityInput" min="1" max="35" value="18" class="input-velocity">
+      </label>
+      <button id="throwBtn">Lanzar</button>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>

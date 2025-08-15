@@ -1,0 +1,9 @@
+Coloca en la carpeta del proyecto estos archivos de sonido (puedes usar libres de derechos o grabar los tuyos):
+
+- throw.mp3   (sonido de lanzamiento de plátano)
+- explosion.mp3   (sonido de explosión)
+- win.mp3   (sonido de victoria)
+
+Puedes descargar sonidos gratuitos en https://freesound.org o similares.
+
+Asegúrate de que los nombres coincidan exactamente y estén en una carpeta llamada 'sounds' dentro del proyecto.
