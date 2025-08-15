@@ -105,7 +105,27 @@ velocityInput.addEventListener("input", () => {
   velocitySlider.value = v;
 });
 
+// --- Dibujo ---
+function draw() {
+  ctx.clearRect(0, 0, WIDTH, HEIGHT);
+  drawBuildings();
+  drawGorillas();
+  if (banana) drawBanana();
+}
 
+function drawBuildings() {
+  for (let b of buildings) {
+    ctx.fillStyle = "#888";
+    ctx.fillRect(b.x, b.y, b.w, b.h);
+    // Ventanas
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 2; j++) {
+        ctx.fillStyle = "#ffe082";
+        ctx.fillRect(b.x + 8 + j * 20, b.y + 10 + i * 30, 10, 16);
+      }
+    }
+  }
+}
 
 function drawGorillas() {
   for (let i = 0; i < gorillas.length; i++) {
